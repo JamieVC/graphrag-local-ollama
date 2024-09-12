@@ -1,0 +1,131 @@
+DirectML Readiness and 
+Example
+Technical Training Material
+WW26 , June 2024Intel Confidential
+ 2*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Legal Disclaimer
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis. You may n ot use or facilitate the use 
+of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a non -
+exclusive, royalty -free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document.
+All information provided here is subject to change without notice. Contact your Intel representative to obtain the latest Int el product specifications and 
+roadmaps.
+All product plans and roadmaps are subject to change without notice.
+The products described may contain design defects or errors known as errata, which may cause the product to deviate from publ ished specifications. 
+Current characterized errata are available on request.
+Intel technologies’ features and benefits depend on system configuration and may require enabled hardware, software or servic e activation. 
+Performance varies depending on system configuration. No computer system can be absolutely secure. Check with your system man ufacturer or 
+retailer or learn more at intel.com.
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular purpose, 
+and non -infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+Altering clock frequency, voltage, or memory interface speeds may void any product warranties and reduce stability, security, performance, and life of 
+the processor and other components. Intel has not validated processor running memory above Plan -Of-Record (POR) speed. DRAM/DIMM devices 
+should support desired speed, check with DRAM/DIMM vendors for details. System manufacturers are responsible for all validati on and assume the risk 
+of any stability, security, performance, or other functional issues resulting from such alterations.
+© Intel Corporation. Intel, the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries. 
+*Other names and brands may be claimed as the property of others. 
+Copyright© 2023 Intel Corporation. All rights reserved.Intel Confidential
+ 3*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Intel Optimized AI PC Stacks
+Intel Confidential
+ 4*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Readiness
+Below models are already supported on NPU
+Model Type Model Name
+Public whisper_base_encoder_lm_fp16_layernorm_gelu
+Public whisper_base_decoder_static_kvcache_128_lm_fp16_layernorm_gelu_4dmask
+Public whisper_base_decoder_static_non_kvcache_lm_fp16_layernorm_gelu_4dmask
+Public mobilenetv2 -7-fp16 -optimized
+Public resnet50 -v1-12-fp16
+Public efficientnet -lite4 -11-fp16
+Public squeezenet1.0 -12-fp16Intel Confidential
+ 5*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DML Benchmarking
+Wait for public binaries from MSFT ,its expected to be available beginning of July
+DirectML/Releases.md at master · microsoft /DirectML (github.com) directml.dll v1.15
+Need to e nable Developer Mode in Settings> System> For developers> Developer Mode ON
+▪WinMLRunner :
+▪WinMLRunner.exe -model whisper_base_encoder_lm_fp16_layernorm_gelu.onnx -GpuAdapterName boost -perf -
+iterations 10
+▪WinMLRunner.exe -model squeezenet1.0 -12-fp16.onnx -GpuAdapterName boost -perf -iterations 1000
+▪DxDispatch :
+▪dxdispatch.exe -i10 -a Boost whisper_base_encoder_lm_fp16_layernorm _gelu.onnx
+▪dxdispatch.exe -i1000 -a Boost resnet50 -v1-12-fp16.onnx -f N:1
+Intel Confidential
+ 6*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Setup Environment
+1.Test configuration:
+▪Platform: MTL
+▪OS: Win11 22H2 or 23H2 
+▪NPU driver: 32.0.100.2540
+▪GPU driver: 31.0.101.5334+
+2.Install Visual Studio 2022 (community version is ok): 
+▪install "Desktop development with C++)
+3.Copy Lab1 DirectML “Samples” and “Libraries” folders to C: \Users \Public
+4.Build Direct MLNpuInference :
+▪Launch C: \Users \Public \Samples \DirectMLNpiInference \Direct MLNpuInference.sln  by Visual Studio 2022
+▪Start build by selecting debug /x64 and click “Local Windows Debugger” 
+5.Build Direct MLSuperResolution :
+▪Launch C: \Users \Public \Samples \Direct MLSuperResolution \Direct MLSuperResolution.sln by Visual Studio 
+2022
+▪Start build by selecting debug /x64 and click “Local Windows Debugger” Intel Confidential
+ 7*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference)
+DirectMLNpuInference
+A minimal but complete DirectML sample that demonstrates how to perform OnnxRuntime
+inference via D3D12 and DirectML on a NPU. Select a NPU device, create a OnnxRuntime session, 
+execute the model on the NPU, and retrieve the results. This sample executes the mobilenet
+model.
+Intel Confidential
+ 8*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Currently, we can only run this sample on MTL with SV2 OS: 
+▪NPU has moved to being generic ml device instead of core compute on 24H2:
+▪const GUID dxGUIDs [] = { DXCORE_ADAPTER_ATTRIBUTE_D3D12_CORE_COMPUTE }; (SV2)
+▪DXCORE_ADAPTER_ATTRIBUTE_ D3D12_GENERIC_ML (24H2)
+▪Need generic ML update to support LNLIntel Confidential
+ 9*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Intel Confidential
+ 10*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Intel Confidential
+ 11*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Intel Confidential
+ 12*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Intel Confidential
+ 13*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (NPU Inference) (Cont.)
+Intel Confidential
+ 14*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (Super Resolution)
+DirectML Super Resolution
+This sample demonstrates the DirectML API by implementing a super -resolution machine learning 
+(ML) model on the GPU. This includes converting between image and tensor formats, initializing 
+and executing ML operators, and interleaving graphics and ML work. The ML model performs a 
+smart upscale of an image to double its original resolution. For example, it can scale a 540p image 
+to 1080p.Intel Confidential
+ 15*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. DirectML Example (Super Resolution) (Cont.)
+The primary purpose of this sample is to demonstrate usage of the DirectML API for real -
+time graphics processing. The particular super -resolution model is rather heavyweight, so 
+a GPU and driver with dedicated ML support is recommended to run at higher 
+framerates :
+•CreateDeviceDependentResources : This calls into several methods to create and initialize the resources 
+required to run the ML model and render the results. In particular, CreateDirectMLResources creates all 
+the DML operators that comprise the model, as well as the D3D resources used to store intermediate 
+results, and shaders to convert between texture and tensor formats. InitializeDirectMLResources binds the 
+D3D resources to the operators and runs operator initialization.
+•Render : If DirectML processing is enabled, this runs the operators using their bound resources to perform 
+the super -resolution method on the current video frame. When DML is disabled, it uses a simple bilinear 
+upscale. The result is rendered to the screen.Intel Confidential
+ 16*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. ▪Image to Tensor
+▪Get residual image
+▪Tensor to image
+DirectML Example (Super Resolution) (Cont.)Intel Confidential
+ 17*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. 
+DirectML Example (Super Resolution) (Cont.)18

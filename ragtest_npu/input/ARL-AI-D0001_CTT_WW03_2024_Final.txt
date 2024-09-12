@@ -1,0 +1,534 @@
+Arrow Lake NPU Introduction and 
+Features
+Technical Training Material​
+WW03, January 2024Intel Confidential
+ 2*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Legal Disclaimer
+You may not use or facilitate the use of this document in connection with any infringement or other legal analysis You may no t use or facilitate the use 
+of this document in connection with any infringement or other legal analysis concerning Intel products described herein. You agree to grant Intel a 
+non-exclusive, royalty -free license to any patent claim thereafter drafted which includes subject matter disclosed herein.
+No license (express or implied, by estoppel or otherwise) to any intellectual property rights is granted by this document.
+All information provided here is subject to change without notice. Contact your Intel representative to obtain the latest Int el product specifications and 
+roadmaps.
+All product plans and roadmaps are subject to change without notice.
+The products described may contain design defects or errors known as errata which may cause the product to deviate from publi shed specifications. 
+Current characterized errata are available on request.
+Intel technologies’ features and benefits depend on system configuration and may require enabled hardware, software or servic e activation. 
+Performance varies depending on system configuration. No computer system can be absolutely secure. Check with your system man ufacturer or 
+retailer or learn more at intel.com .
+Intel disclaims all express and implied warranties, including without limitation, the implied warranties of merchantability, fitness for a particular 
+purpose, and non -infringement, as well as any warranty arising from course of performance, course of dealing, or usage in trade.
+© Intel Corporation​. Intel, OpenVINO
+ , the Intel logo, and other Intel marks are trademarks of Intel Corporation or its subsidiaries.
+*Other names and brands may be claimed as the property of others.
+Copyright © 2024, Intel Corporation. All rights reserved.Intel Confidential
+ 3*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Agenda
+▪Client AI and Roadmap
+▪What is NPU?
+▪What is MEP (Windows* Studio)?
+▪Arrow Lake (ARL) NPU POR Features
+▪ARL Audio Processing Object (APO)
+▪NPU Software Enabling and Experiences
+▪Q and A4*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialClient AI and RoadmapIntel Confidential
+ 5*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. AI Today
+Enhancements
+Elevated video collaboration & streaming
+Enhanced Audio effects
+Creator and Gaming effectsAI Tomorrow
+Everything
+AI Assistants know your daily context 
+More creative, productive, & collaborative
+Across everything you do
+Cloud
+Massive scalable compute
+High Latency
+Privacy Concerns
+ExpensiveClient
+Massive distributed scale
+Low Latency
+Improved Privacy
+Lower Cost (to ISV)Transforming the PC ExperienceIntel Confidential
+ 6*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. AI Inflection Point
+Microsoft* believes that neural processing units, like Intel’s NPU, represent an inflection point in 
+computing and will be key to delivering a whole new range of delightful experiences to Windows* 
+users on their PCs. These experiences will transform how people use their computers and connect 
+with others. 
+CPU GPU NPU
+Launching New Client Compute Capacity at Scale
+Intel Confidential
+ 7*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. CommercialMeteor Lake ISVs
+CPU iGPU NPU
+Sustained Workloads, 
+dedicated offloadAI integrated with 3D/render/ media 
+pipelines; high batch sizeFast Response, Low latency
+Meteor Lake Lunar Lake (MX 17W) Arrow Lake Panther Lake
+CPU 6(45W) 5 9 (45W) 14 5 11 (45W)
+U-series H-series H-series S-series U-series H-series
+iGPU 8 19 59 72 9 41 123 (45W)
+NPU 11 45 11 13 48 48
+Platform 
+TOPS25 36 109 Up to 92 Up to 36 98 1828Q Client AI RoadmapIntel Confidential
+ 8*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. HW Value RPL MTL ARL LNL MX PTL
+CPUSW Programmability; low latency, 
+single inference tasksAVX -256 VNNI
+H: 4 -5 TOPSAVX -256 VNNI
+H: ~3 -6; U: ~2 -3 TOPSAVX -256 VNNI
+H: ~7 -9.5; S: 14 TOPSAVX -256 VNNI
+~2-5 TOPSAVX2+
+TOPS -H: Up to 11; U: 5
+iGPUAI integrated with 3D/render/ 
+media pipelines; high batch sizeDP4A
+H/U: up to 9 TOPS
+S/HX: 3 TOPSDP4a (U, H)
+H: up to 19 TOPS
+U: up to 8 TOPSDP4a (U, S, HX)
+~9 TOPS
+ARL H w/XeMatrix 
+Extensions (XMX)
+Up to  72 TOPSDP4a + XeMatix
+Extensions (XMX)
+Up to 59 TOPSDP4a + XMX
+H: Up to ~123 TOPS
+U: up to 41 TOPS
+iNPUDedicated AI Offload, Power 
+efficiency for Battery LifeNANPU 2.7
+TOPS -H: 11 TOPS; U: 9.5 -11; ARL S, HX: 13NPU 4.0
+Up to 45 TOPSNPU 5.0
+Up to 48 TOPS
+3
+Bursty , Latency 
+sensitiveSustained, Battery 
+life sensitivePeriodic, Throughput 
+sensitiveClient AI Workloads are Diverse
+No Single Compute Unit Meets All Key Needs
+The Right Frameworks for Innovation and Scale:TOPS will vary slightly based on power & frequency of each sku
+WebAssembly
+WebGPU
+WebNN
+8Q Client AI Roadmap (Cont.)9*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialWhat is NPU?Intel Confidential
+ 10*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Drivers for Windows and LinuxReduce Memory I/O Usage Fast, Ultra Low Power Inferencing
+Improve System and App ResponsivenessPerformance Up to 13 TOPs (int8)
+MAC Engine 4096 (INT8) with FP32 Accumulator
+Local Cache 4096 KB Software -Managed
+Programmable DSP VLIW supporting Integer, FP, Transcendental
+Peak Memory Interface BW 64 GBps , Unified Memory Architecture
+Internal Data Type Support INT8, FP16, BF16, FP32 (emulated)
+Hardware CompressionQuantized Data Type Support
+Fine -Grain Weight and Activation Sparsity
+Weight Compression
+MAC Fixed Function supportGeneral Matrix -Matrix, Matrix -Vector
+Convolution, Fully Connected, Reshape
+Elementwise Fixed Function 
+supportReLU /PReLU
+Add/Mul
+Quantize/Dequantize
+Reshape
+OS Supported Windows* OS, Chrome*, Linux*
+Runtime Framework SupportOpenVINO
+ Toolkit, ONNX RT, 
+WinML /DirectML, WebNN
+NPU
+Tile
+Cache2K Multiply 
+Accumulat
+e Engine
+Post 
+Processing 
+Engine
+AI DSP 
+Processor
+Cache2K Multiply 
+Accumulat
+e Engine
+Post 
+Processing 
+Engine
+AI DSP 
+Processor
+1. At Vmax in 15W MTL/ARL workload. Peak TOPs 13 at 1.6 GHz ResNet50, Int8, BS1, 50% 
+sparsity
+2. See backup for workloads and configurations. Results may vary.2K Multiply 
+Accumulat
+e EngineTile
+Post 
+Processing 
+Engine
+AI DSP 
+Processor
+CacheArrow Lake: Neural Processor Unit
+Power Efficient AIIntel Confidential
+ 11*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Software Frameworks for Innovation and Scale
+Underlying technology ingredient and 
+vertical option on Windows*/Linux*.
+OpenVINO
+ powers ONNX* -Runtime, 
+Web, ChromeOS* interfaces.
+Onnx -Runtime Web
+TFJS or TFLITE for Web
+Web Neural 
+Network API*
+Chrome/Edge
+WinML
+DirectML
+NNAPI runtime 
+→TF-Lite*
+Chrome OSNNAPI/TFLITETFLITETraining Frameworks / Tools
+NNAPI  delegate for NPU
+Consult OSV for any OEM 
+differentiation opportunity
+LinuxModel distribution formats
+Inference Frameworks
+Targeted Operating Systems
+Windows* ML + DirectML
+ONNX -Runtime + OEM choice of EP 
+(DirectML, MLAS, OpenVINO
+ )Intel® Neural Compressor
+NNCF
+Native deployment support in 
+evaluation, not on roadmap
+NOT POR for GPU/NPU
+Embracing and Enabling an Open EcosystemIntel Confidential
+ 12*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. NPU Value Prop
+Workload’s Good for the NPU:
+Performance
+To run advanced, higher quality 
+AI models for Richer 
+ExperiencesBattery Life
+Deliver premium AI based 
+experiences without sacrificing 
+battery lifeResponsiveness
+Free the CPU and iGPU for 
+greater responsiveness & 
+productivity
+Sustained AI Workloads Offload the CPU, iGPU , dGPU for responsiveness Require High integrated TOPs
+Model Characteristics: small Batch Size, FP 16/Int8, Sparsity enabled models
+Image, Video, Audio
+Client AI -Todd MatslerIntel Confidential
+ 13*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Resnet50 Example Based on MTL 
+▪Peak TOPS ( pTOPS ) = Peak Theoretical Max Performance 
+pTOPS = max frequency * (MAC/Clock) * 2
+NPU is 11 pTOPS
+▪Effective TOPS ( eTOPS ) = Real Performance on a given AI 
+Workload (the efficiency of pTOPS )
+eTOP S= (fps * each frame GOPs )/1000 
+NPU 8.2 eTOPS = (1000 * 8.216 )/1000
+▪We use ResNet50: a common network + a good mix of a 
+memory and compute bound network. Is it Perfect? -> No, but it 
+is better than pTOPS as eTOPS shows real workload measured 
+across many HW configs
+▪AI Benchmark for Client: Not 1 standard Today (UL Procyon 
+Redowa (POR)/ MLPerf /GeekBenchML )
+Input 224x224 Output (frame)Workload
+(MACs operations on NPU)
+▪Operations per 
+frame: constant 
+value per network, 
+for Resnet50 it is 
+8.216 GOPs
+One multiply -accumulate is two operations
+1measured on early MTL Si & SW: B0 Si, pre -beta SW 2/3/2023
+2with 50% sparsity enabled, estimated target for production Si and SW is ~1000fps & ~8.2 
+eTOPS
+3MTL RN50: RN50 1.5 Open Model Zoo; QCOM RN50 version is UL Procyon AI Inference 
+benchmark 2.4.0
+4QCOM reports 29 pTOPS for 8cx Gen3 full SOC (CPU/GPU/NP); NPU only pTOPS estimated 
+by Intel, based on current Intel internal analysis of available informationIntel Confidential
+ 14*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. NPU OpenVINO
+ Plus DirectML Stack
+▪Unified driver architecture using Microsoft* 
+Compute Driver Model (MCDM)
+▪OpenVINO
+ via Level 0 interface, 
+WindowsML /DirectML via DX12
+▪DX12 UMD in NPU SW stack supports 
+WindowsML /DirectML
+▪OpenVINO
+ tools used to quantize/lower any 
+ONNX* model for NPU execution
+▪OpenVINO
+ Apps compile & execute models 
+using NPU Compiler tool chain & L0 NPU driver
+▪DirectML use DML compiler plus NPU compiler 
+tool chain and DX12 UMD
+▪The NPU Driver package includes NPU FW and 
+Compilers to support JIT CompileWindows* SW Stack
+15*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialWhat is MEP (Windows® Studio)?Intel Confidential
+ 16*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. What is MEP?
+▪Example: Configurable MEP effects by Application ▪MEP standardized control interfaces (Camera 
+DDIs and APIs)
+▪MSFT provide consistent AI Models:
+▪Optimized Algorithm for NPU
+▪OEM/ISV apps can apply effects to any cameraWhy Microsoft* Effect Pack?
+▪MEP DDI Interface 
+WinOS Behavior
+User/Application VisibleIntel Confidential
+ 17*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Intel® NPU (NPU) Running Windows* Studio (MEP)
+Intel Confidential
+ 18*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Windows* Settings Camera Page and Inbox Camera Application
+Intel Confidential
+ 19*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. New TEAMS* –Settings Page
+20*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialARL NPU POR FeaturesIntel Confidential
+ 21*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. ARL NPU POR Features –MEP + APO
+Notes:
+▪Intel will work with Microsoft* to evaluate future capabilities for ARL and beyond
+▪Customers should contact Microsoft* to discuss MEP feature roadmap
+▪APO depends on OEM choice and optimization with Intel
+▪For “Voice Focus”, it is CPU only for now. NPU is TBD.MEP (Windows* Studio Effects)
+Bokeh
+Voice access/ Live 
+caption Auto FramingARL NPU
+NPU
+NPU
+NPU
+Eye Contact Correction
+Voice Focus*Background Blur
+NPU
+NPU
+CPU
+More.. (TBD) NPU
++APO Vendor 
+Waves
+FortemediaNPU
+NPU
+Elevoc
+DolbyRealtek
+NPU
+NPU
+NPU
+IntelligoNPU
+22*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialARL APOIntel Confidential
+ 23*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Audio AI Offload Transitions to NPU
+TGL-MTL platforms include GNA for 
+offloading Dynamic Noise Suppression 
+(DNS) from CPU.
+▪DNS and other audio AI workloads 
+(example: ASR) will migrate to NPU
+▪Migration starts on MTL, completes on 
+LNL (no GNA)
+▪Most S0 audio processing will run on 
+either NPU or CPU
+▪Post processing of audio playback runs 
+on a DSPCPU
+I/O
+ACE 
+DSPGNA
+Smart 
+Amp
+NPU
+BT/USB
+Array MicrophonesLong duration 
+workloads target NPUShort duration, lowest 
+latency workloads 
+target CPUIntel Confidential
+ 24*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. APO –Audio Processing Object
+▪Windows* allow OEMs and third -party audio hardware manufacturers to include 
+custom digital signal processing effects as part of their audio driver's value -added 
+features. These effects are packaged as user -mode system effect Audio Processing 
+Objects (APOs).
+▪Audio processing objects (APOs), provide software based digital signal processing for 
+Windows* audio streams. An APO is a COM host object that contains an algorithm that 
+is written to provide a specific Digital Signal Processing (DSP) effect.
+▪Examples of APOs include graphic equalizers, reverb, tremolo, Acoustic Echo 
+Cancellation (AEC) and Automatic Gain Control (AGC). APOs are COM -based, real -time, 
+in-process objects.Intel Confidential
+ 25*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Intel® SoC    Intel® SoC .Zoom* / Teams*
+Windows*  Audio   .
+Framework
+Intel® SST Audio DriverApplication
+Layer
+OS Layer
+Hardware
+LayerDNS -Supported APO 
+(handled by CPU)
+Zoom* / Teams*
+Windows* Audio 
+Framework
+Intel® SST 
+Audio DriverDNS -Supported APO (offload to 
+Intel® NPU)
+Intel®  
+NPU HW
+InternetCPU Mode Intel® NPU Offload Mode
+Intel® DSP HW
+Recording 
+audio flowRecording 
+audio flowAudio Flow with Intel® NPU DNS
+Intel® DSP 
+HWIntel® NPU 
+Driver26*Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialNPU Software Enabling and ExperienceIntel Confidential
+ 27*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Q4 ‘23
+OCT NOV DECQ1 ‘24
+JAN FEB MAR
+Meteor Lake
+Launch EventQ2 ‘24
+APR MAY JUN
+CES 
+Platform LaunchCommercial 
+Launch
+Investor DayRSA
+Security Event
+▪Rewind
+▪Adobe
+▪Microsoft MEP
+▪Microsoft Teams
+▪Windows Accessibility
+▪Gimp
+▪Xsplit
+▪Audacity
+▪OBS
+▪iQiYi
+▪Wondershare
+▪ByteDance
+▪BufferZone▪Zoom
+▪Crowdstrike
+▪Magix
+▪Cyberlink
+▪Skylum
+▪VMware WS1▪Office & Co -Pilot
+▪Adobe
+▪Microsoft Defender
+▪Crowdstrike
+▪Zoom
+▪Teams
+▪Cisco Webex
+▪Tencent Meeting
+▪Autodesk
+▪Google Meet
+▪Figma
+▪GoTo Technologies
+▪Ivanti
+▪Khan Academy
+▪Adobe
+▪Gimp –Stable Diff
+▪Zoom
+▪Teams
+▪Cisco Webex
+▪Crowdstrike
+▪Autodesk▪Defender
+▪Trend Micro
+▪BitDefender
+▪CrowdStrike
+▪BufferZone
+▪Trellix
+▪Sophos
+Intel Vision Series:  AMR, EMEA, APJ/PRC
+Microsoft Build
+▪Adobe
+▪Microsoft Teams
+▪WebEx (AI tech preview)Cisco WebEx One
+Intel Client AI
+Industry Enabling
+Figma
+▪Regional ISVs & Solution Partners
+▪Future AI use casesBETT (Edu)
+Platform Launch
+▪Microsoft MEP
+▪Teams
+▪Zoom
+▪Windows
+▪Adobe
+▪Google Meet
+▪Labster
+▪VictoryXR
+Meteor Lake ISV AI MomentsIntel Confidential
+ 28*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. 
+“Microsoft believes that neural processing units, like Intel’s NPU, represent an inflection point in computing and will 
+be key to delivering a whole new range of delightful experiences to Windows users on their PCs. These 
+experiences will transform how people use their computers and connect with others. We are closely partnering 
+with Intel on NPU and are excited to share more soon.”  -Vivek Pradeep, Partner Research Manager, Microsoft
+ISV Partner Targets (not a POR). List Not Exhaustive.▪Microsoft* Collaboration:
+•Windows* Studio Effects, OS Accessibility, and New OS Experiences
+•1st party App AI experiences: Office and Teams
+•Co-engineering DirectML for NPU –for broader scale
+•Supports ONNX Runtime DML -EP
+▪Industry -standard Software Framework Support for Broad, Open ISV Application Ecosystem
+▪Enablement of Select OEM Proprietary Models
+NPU Software EnablingIntel Confidential
+ 29*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. AI Workload Briefcase
+▪Visit AI Workload Briefcase , 
+•Videos Reference:
+•GIMP with Stable Diffusion 
+•Adobe Lightroom Classic AI Photo Editing
+•AI Enhanced Collaboration with Windows 
+Studio Effects
+•Wondershare Filmora : AI Video Editing
+•Workload Assets:
+•GIMP with Stable Diffusion
+•Adobe Lightroom Classic AI Photo Editing
+•XSplit VCam NPU Background 
+Segmentation 
+•Etc.
+Intel Confidential
+ 30*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Basic  Blur Advanced Blur New and improved features
+New!
+Auto -framing 
+Eye contact 
+Avatar representation
+Gesture recognitionImproved!
+Background Concealment 
+Dynamic Noise Suppression 
+CPU Workload
+Advanced BlurWith NPU No NPUEnhanced Collaboration ExperiencesIntel Confidential
+ 31*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Generative AI Experiences
+Open -source GIMP plug -in for Stable Diffusion at Performance
+10 5 20 30 40 50
+Text Prompt: cyborg man with a highly detailed, intricate details, carved by Michelangelo
+Intel Confidential
+ 32*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. Realtime motion 
+capture for 
+Unreal Engine
+Maintain/improve 
+render 
+performance on the 
+GPU by offloading 
+the AI to the NPU
+Seeding Open -Source ProjectsIntel Confidential
+ 33*Other names and brands may be claimed as the property of others. All products, computer systems, dates and figures specified
+are preliminary based on current expectations, and are subject to change without notice. AI Today
+Enhancements
+Elevated video collaboration & streaming
+Enhanced Audio effects
+Creator and Gaming effectsAI Tomorrow
+Everything
+AI Assistants know your daily context 
+More creative, productive, & collaborative
+Across everything you do
+Cloud
+Massive scalable compute
+High Latency
+Privacy Concerns
+ExpensiveClient
+Massive distributed scale
+Low Latency
+Improved Privacy
+Lower Cost (to ISV)Transforming the PC Experience34End

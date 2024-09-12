@@ -1,0 +1,418 @@
+NPU validation & debug
+May 2024
+CCG CPE CCE 
+Phoebe HsuIntel Confidential Department or Event Name
+ 2 Intel Confidential Department or Event Name
+ 2Outline
+•Client AI and Roadmap
+•Validation
+•Workshop validation
+•NPU benchmarking 
+•Procyon (3rdparty app)
+•PTAT
+•MSFT WSE Tool
+•Logs/Debug
+•Intel STC v2.3: NPU/MEP Camera trace/UMD/KMD, Xperf
+•GPUView
+•Windbg -Live kernel dump/BSOD memory dump
+•Traceview
+•WPR
+•PTAT3 *Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to change without notice. Intel ConfidentialClient AI and RoadmapIntel Confidential Department or Event Name
+ 4 Intel Confidential Department or Event Name
+ 4AI Today
+Enhancements
+Elevated video collaboration & streaming
+Enhanced Audio effects
+Creator and Gaming effectsAI Tomorrow
+Everything
+AI Assistants know your daily context 
+More creative, productive, & collaborative
+Across everything you do
+Cloud
+Massive scalable compute
+High Latency
+Privacy Concerns
+ExpensiveClient
+Massive distributed scale
+Low Latency
+Improved Privacy
+Lower Cost (to ISV)Transforming the PC ExperienceIntel Confidential Department or Event Name
+ 5 Intel Confidential Department or Event Name
+ 5CommercialMeteor Lake ISVs
+CPU iGPU NPU
+Sustained Workloads, 
+dedicated offloadAI integrated with 3D/render/ media 
+pipelines; high batch sizeFast Response, Low latency
+Meteor Lake Lunar Lake (MX 17W) Arrow Lake Panther Lake
+CPU 6 (45W) 5 9 (45W) 14 5 11 (45W)
+U-series H-series H-series S-series U-series H-series
+iGPU 8 19 59 72 9 41 123 (45W)
+NPU 11 45 11 13 48 48
+Platform 
+TOPS25 36 109 Up to 92 Up to 36 98 1828Q Client AI RoadmapIntel Confidential Department or Event Name
+ 6 Intel Confidential Department or Event Name
+ 6HW Value RPL MTL ARL LNL MX PTL
+CPUSW Programmability; low latency, 
+single inference tasksAVX -256 VNNI
+H: 4 -5 TOPSAVX -256 VNNI
+H: ~3 -6; U: ~2 -3 TOPSAVX -256 VNNI
+H: ~7 -9.5; S: 14 TOPSAVX -256 VNNI
+~2-5 TOPSAVX2+
+TOPS - H: Up to 11; U: 5
+iGPUAI integrated with 3D/render/ 
+media pipelines; high batch sizeDP4A
+H/U: up to 9 TOPS
+S/HX: 3 TOPSDP4a  (U, H)
+H: up to 19 TOPS
+U: up to 8 TOPSDP4a (U, S, HX)
+~9 TOPS
+ARL H w/Xe Matrix 
+Extensions (XMX)
+Up to  72 TOPSDP4a + Xe Matix  
+Extensions (XMX)
+Up to 59 TOPSDP4a + XMX
+H: Up to ~123 TOPS
+U: up to 41 TOPS
+iNPUDedicated AI Offload, Power 
+efficiency for Battery LifeNANPU 2.7
+TOPS - H: 11 TOPS; U: 9.5 -11; ARL S, HX: 13NPU 4.0
+Up to 45 TOPSNPU 5.0
+Up to 48 TOPS
+3
+Bursty , Latency 
+sensitiveSustained, Battery 
+life sensitivePeriodic, Throughput 
+sensitiveClient AI Workloads are Diverse
+No Single Compute Unit Meets All Key Needs
+The Right Frameworks for Innovation and Scale:TOPS will vary slightly based on power & frequency of each sku
+WebAssembly
+WebGPU
+WebNN
+8Q Client AI Roadmap (Cont.)Intel Confidential Department or Event Name
+ 7 Intel Confidential Department or Event Name
+ 7Client AI Inference SW For Deployment 2023+
+Intel Confidential Department or Event Name
+ 8 Intel Confidential Department or Event Name
+ 8Resnet50 Example Based on MTL 
+▪ Peak TOPS ( pTOPS ) = Peak Theoretical Max Performance 
+       pTOPS  = max frequency * (MAC/Clock) * 2
+       
+       NPU is 11 pTOPS
+▪ Effective TOPS ( eTOPS ) = Real Performance on a given AI Workload 
+(the efficiency of pTOPS )
+       eTOP S = (fps * each frame GOPs )/1000 
+                        
+       NPU 8.2 eTOPS  = (1000 * 8.216 )/1000
+       
+▪ We use ResNet50: a common network + a good mix of a memory and 
+compute bound network. Is it Perfect? -> No, but it is better than 
+pTOPS  as eTOPS  shows real workload measured across many HW 
+configs
+▪ AI Benchmark for Client: Not 1 standard Today (UL Procyon Redowa 
+(POR)/ MLPerf /GeekBenchML )Input 224x224 Output (frame)Workload
+(MACs operations on NPU)
+▪Operations per 
+frame: constant 
+value per network, 
+for Resnet50 it is 
+8.216 GOPs
+One multiply -accumulate is two operations
+pTOPS Resnet50 FPS eTOPS Efficiency
+MTL NPU 11 1000 8.2 75%9 *Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to  change without notice. Intel ConfidentialValidationIntel Confidential Department or Event Name
+ 10 Intel Confidential Department or Event Name
+ 10Workshop validation
+•Download Intel NPU OEM Workshop Validation Software Kits
+•\validation_mtl_arl_lnl \validation \test_scripts
+•More MSFT MEP test case
+•Meteor Lake VPU MEP Enablement and Validation Testcases in OEM Platform
+•Hot -plug AC adaptor/type C monitor, MS/S4/Reboot stress test, screen on 
+idle, teams call, launch/close camera app, on/off effects…etc.
+Intel Confidential Department or Event Name
+ 11 Intel Confidential Department or Event Name
+ 11Workshop validation
+NPU_001 NPUVerify NPU with multiple inference 
+models support using OpenVINO
+framework ( ResNet /MobileNet )Verify NPU with multiple inference models support 
+using OpenVINO framework. The models will be run 
+sequentially using the application. A single instance of 
+Image Classification will be executed using ResNet
+followed by MobileNet .a) Command runs successf ully. No errors, BSODs, hangs, TDRs and 
+crashes are observed.  
+b) Open window showing tiles of classified image and the expectation is 
+that the prediction of the input is correct.
+NPU_002 NPU Verify NPU driver for D0 and D3 statesVerify NPU driver for D0 and D3 states. The OpenVINO
+model used is ResNet 50 and the application used to 
+run the model on VPU IP is Image Classification. The 
+transition from D3 to D0 and D0 to D3 is checked using 
+SocWatch toola) Open SoCWatch without error, SoC Watch command : "socwatch.exe -
+f sys -o filename"
+b) User should be able to navigate to the mentioned path in device 
+manager and note the current power state from it. If the NPU device is 
+not working Power state should be D3. If the NPU device is working, the 
+power state should be D0.
+c) Run inference and Stop log collection & verify VPU device should go to 
+D3->D0->D3
+NPU_003 NPUVerify NPU functionality in DC mode 
+real batteryVerify offloading workload to NPU with SUT connected 
+to real batterya) NPU utilization is observed to increase. NPU Compute utilization > 0% 
+when inferencing is ongoing.  
+b) Command runs successfuly. No errors, BSODs, hangs, TDRs and 
+crashes are observed.  
+c)The first inference time, throughput and latency results are non zero
+value
+NPU_004 NPU Verify the MEP camera effect on NPU Verify the MEP installation and optin on NPUa) Modify the ivd64extn.inf in NPU driver, default SUBSYS HWID LNL 
+(8086_643E), MTL (8086_7D1D)
+b) Install the ivd64extn.inf and check the status in Device Manager
+c) Install MEP base package and camera component package, then check 
+the status in Device Manager Software components, Windows Studio 
+Effects should be available
+d) Optin the camera with CameraOptinUtils from MSFT, or add 
+"FSMEnableMsEffects : REG_DWORD: 0x1" under Device Interface Node 
+registry
+e) If the MEP and Camera Opt -in are successful, control the MEP camera 
+effects in Windows Setting and test it with Windows Camera applicationIntel Confidential Department or Event Name
+ 12 Intel Confidential Department or Event Name
+ 12Workshop validation
+656: 'minivan’,
+734: 'police van, police wagon, paddy wagon, patrol wagon, wagon, black Maria’
+705: 'passenger car, coach, carriage’
+1000 class ids to human readable labels
+https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a
+Intel Confidential Department or Event Name
+ 13 Intel Confidential Department or Event Name
+ 13Workshop validation 
+Intel Confidential Department or Event Name
+ 14 Intel Confidential Department or Event Name
+ 14NPU benchmarking
+•We use ResNet50 to measure eTOPS
+•a common network + a good mix of a memory & compute bound network
+•Effective TOPS ( eTOPS ) = real performance on a given AI workload 
+(the efficiency of pTOPS ) 
+•eTOP S = (fps * each frame GOPs )/1000
+•Operations per frame: constant value per network, for Resnet50 it’s 8.216 GOPs
+•See MTL/LNL Platform NPU Benchmarking for detailsIntel Confidential Department or Event Name
+ 15 Intel Confidential Department or Event Name
+ 15Run Resnet50 on MTL NPU
+1. Download NPU driver from RDC  and then install it and its extension driver w/ 4 -part ID
+2. Install one of Python 3.8 - 3.11 and following below steps to create virtual environment, ov_24.0 under C:\Users \Public \
+3. Download OpenVINO  package, w_openvino_toolkit_mtl_23ww19.zip , form WW22’23 BKC release to get Resnet50 model, and then 
+unzip to C: \Users \Public, and you can see below 2 zip files
+4.Unzip “w_ov_dyn_win_t_230508_1951_ov_1f790df33c73a9a_vx_a9f38da07e3a135_TOOLS.zip” to C:\Users \Public
+5. Create npu_config.json  and add below line to it, and then save it at C: \Users \Public \
+6. Pre -check:
+Required Files File Path
+ResNet50 int8 with 50% sparsity
+(IR model)•C:\Users \Public \tools \ir_models \IRv11 \20230309_vpu -models -mtl -por -ir_v11_ov_2022.3.0 -9752fafe8eb \ 
+resnet -50-v1_5 -sparse50 \onnx \FP16 -INT8 \resnet -50-v1_5 -sparse50.xml
+•C:\Users \Public \tools \ir_models \IRv11 \20230309_vpu -models -mtl -por -ir_v11_ov_2022.3.0 -9752fafe8eb \ 
+resnet -50-v1_5 -sparse50 \onnx \FP16 -INT8 \resnet -50-v1_5 -sparse50.bin
+NPU configuration C:\Users \Public \npu_config.json{"NPU": {"NPU_COMPILER_TYPE": "DRIVER", "NPU_COMPILATION_MODE_PARAMS": "enable -activation -sparsity=true" }}$ cd C: \Users \Public \
+$ python -m venv  ov_24.0
+$ ov_24.0 \Scripts \activate
+$ python -m pip install --upgrade pip
+$ pip install openvino ==2024.0.0Intel Confidential Department or Event Name
+ 16 Intel Confidential Department or Event Name
+ 16Run Resnet50 on MTL NPU (Cont.)
+$ C:\Users \Public \ov_ 24.0 \Scripts \activate
+$ cd C: \Users \Public \
+$ copy C: \Users \Public \tools \ir_models \IRv11 \20230309_vpu -models -mtl -por -ir_v11_ov_2022.3.0 -9752fafe8eb \resnet -50-v1_5 -sparse50 \onnx \FP16 -
+INT8 \resnet -50-v1_5 -sparse50.* .
+$ benchmark_app  -d NPU -m resnet -50-v1_5 -sparse50.xml -t 180 -layout [NCHW] -ip f16 -op f16 -api sync -load_config  npu_config.json$ benchmark_app  -d NPU -m resnet -50-v1_5 -sparse50.xml -t 180 -layout [NCHW] -ip f16 -op f16 -hint throughput -load_config  npu_config.json
+Result for reference:
+• Configuration:
+• MTL -H 28W
+• NPU 2196 driver
+• OpenVINO  2024.0
+• MEMORY size: 16GB
+• Performance on MTL NPU:
+Execution Mode NPU
+Latency 6.43
+Throughput 8.47
+Unit: eTOPs7.Open cmd  terminal and then run below commands to setup environment and prepare model before run benchmark_app
+8. Run NPU in Throughput mode
+9. Run NPU in Latency modeIntel Confidential Department or Event Name
+ 17 Intel Confidential Department or Event Name
+ 17One -click Script for Test
+• Pre -check:
+• Create resnet50.bat and add below lines into it, and then save it at C: \Users \Public \Required Files File Path
+Python environment C:\Users \Public \ov_24.0 \
+ResNet50 int8 with 50% sparsity
+(IR model)•C:\Users \Public \resnet -50-v1_5 -sparse50.xml
+•C:\Users \Public \resnet -50-v1_5 -sparse50.bin
+NPU configuration C:\Users \Public \npu_config.json
+call C: \Users \Public \ov_24.0 \Scripts \activate
+cd C: \Users \Public \
+benchmark_app  -d NPU -m resnet -50-v1_5 -sparse50.xml -t 180 -ip f16 -op f16 -layout [NCHW] -api sync -load_config  npu_config.json
+benchmark_app  -d NPU -m resnet -50-v1_5 -sparse50.xml -t 180 -ip f16 -op f16 -layout [NCHW] -hint throughput -load_config  npu_config.json
+pauseIntel Confidential Department or Event Name
+ 18 Intel Confidential Department or Event Name
+ 18Procyon
+•Apply access
+https://wiki.ith.intel.com/display/ITSVPUCSE/How+to+get+Redowa+packages
+•Procyon package
+\\pwb -release.amr.corp.intel.com \release \Futuremark \Procyon  (Release & Pre -release)
+•Procyon system configuration
+•Procyon version: >=2.6.896
+•NPU version: 31.0.100.1688 
+•Score: >= 480 (+ - 5%)
+•AC, Best Performance
+•NPU, select OpenVino  tab
+Intel Confidential Department or Event Name
+ 19 Intel Confidential Department or Event Name
+ 19Procyon
+Example on MTL RVPIntel Confidential Department or Event Name
+ 20 Intel Confidential Department or Event Name
+ 20PTAT
+•Download Intel® Power And Thermal Analysis Tool
+•Download the latest toolkit “w_openvino_toolkit_YYWWNN”.zip (internal)
+•Follow below steps to make the OpenVINO  library files available for running 
+the NPU workload 
+•There are two w_vo_*.zip files of which one has the sample files, and another has tool 
+files.
+•Unzip the sample zip file and tool zip file to a directory and rename it to 
+“openvinoSample ” and  “ openvinoTools  
+Intel Confidential Department or Event Name
+ 21 Intel Confidential Department or Event Name
+ 21PTAT
+•add the below three paths to the environment variables as follows (add to both systems and 
+user path variables) 
+•copy(overwrite) that workload application “benchmark_app.exe” to the PTAT installed 
+directory
+C:\Program Files \Intel Corporation \Intel(R)PTAT \Vpu” 
+Intel Confidential Department or Event Name
+ 22 Intel Confidential Department or Event Name
+ 22PTAT
+Intel Confidential Department or Event Name
+ 23 Intel Confidential Department or Event Name
+ 23MSFT WSE Tool
+•Download WSE Tool  (WseEnablingStatus.exe and WsePerformanceAssessmentTool.exe)
+•WseEnablingStatus.exe
+•Checks the status of MEP installed on the system 
+•You will see MEP opt -in camera and Windows Studio Effect version when you run this 
+tool if you opt -in MEP successfully.
+Intel Confidential Department or Event Name
+ 24 Intel Confidential Department or Event Name
+ 24MSFT WSE Tool
+•The tool will point out the problem if you don’t opt -in MEP correctly.
+Intel Confidential Department or Event Name
+ 25 Intel Confidential Department or Event Name
+ 25MSFT WSE Tool
+•WsePerformanceAssessmentTool.exe
+•Allows profiling the following metrics
+26 *Other names and brands may be claimed as the property of others. 
+All products, computer systems, dates and figures specified are preliminary based on current expectations, and are subject to  change without notice. Intel ConfidentialLogs/DebugIntel Confidential Department or Event Name
+ 27 Intel Confidential Department or Event Name
+ 27Intel STC v2.3
+▪To collect Camera and NPU UMD/KMD trace, Xperf  log
+▪Download Intel System Trace Collector (STC) Tool , launch it by STC.exe
+▪Select “NPU WSE realtime ” (Camera and NPU UMD/KMD)
+Intel Confidential Department or Event Name
+ 28 Intel Confidential Department or Event Name
+ 28Intel STC v2.3
+•You will see another console pop up.
+•Reproduce the issue and press ENTER when finished.
+Intel Confidential Department or Event Name
+ 29 Intel Confidential Department or Event Name
+ 29Intel STC v2.3
+▪It will auto zip the log
+▪Use Windows Performance Analyzer (WPA) tool in ADK  to open Trace_MultImedia.etl
+Intel Confidential Department or Event Name
+ 30 Intel Confidential Department or Event Name
+ 30Intel STC v2.3
+The following strings can be used to collect the MEP related logs.
+•Microsoft.Windows.Capture.WindowsEffectCameraMediaSource
+•Microsoft.ASG.Perception
+Intel Confidential Department or Event Name
+ 31 Intel Confidential Department or Event Name
+ 31Intel STC v2.3
+▪Collect Xperf  log by STC tool
+▪Pre -request: install Windows ADK 
+Intel Confidential Department or Event Name
+ 32 Intel Confidential Department or Event Name
+ 32GPUView
+GPUView  is useful to debug performance issues. 
+The adaptor NPU will record the inference event, 
+click the block can get this inference details, 
+including execution time, submission and 
+complete time. 
+▪Install Windows ADK 
+▪In NPU driver release package, rename 
+script/ etw /gpuview /log.cmd to log_npu.cmd 
+and copy it to Windows Performance 
+Toolkit \gpuview  folder.
+▪Execute cmd.exe as administrator and run 
+log_npu.cmd.
+▪Reproduce the issue.
+▪When test complete, go back to the Admin cmd  
+window and run log_npu.cmd again to generate 
+the Merged.etl  file
+Intel Confidential Department or Event Name
+ 33 Intel Confidential Department or Event Name
+ 33GPUView
+Intel Confidential Department or Event Name
+ 34 Intel Confidential Department or Event Name
+ 34Windbg -Live kernel dump/BSOD memory dump
+NPU driver also supports kernel live dump, we can use Windbg  tool to check who causes the TDR.
+The dump file is in C: \Windows \LiveKernelReports \WATCHDOG
+If dump was not observed
+•Make sure sub reg keys under 
+Computer \HKEY_LOCAL_MACHINE \SYSTEM \CurrentControlSet \Control \CrashControl \LiveKer
+nelReports \WATCHDOG are cleaned up, if it reaches 10, you won’t see OS report files dump
+•Disable the Windows Error Reporting Service 
+Intel Confidential Department or Event Name
+ 35 Intel Confidential Department or Event Name
+ 35Windbg -Live kernel dump/BSOD memory dump
+Intel Confidential Department or Event Name
+ 36 Intel Confidential Department or Event Name
+ 36Windbg -Live kernel dump/BSOD memory dump
+•If the system shows blackscreen  or blue screen (BSOD), see if any memory dump created under 
+C:\Windows \MEMORY.DMP. 
+•Using Windbg  tool to check if NPU driver npu_kmd.sys or ivdkmd.sys in Windbg  !analyze –v 
+Intel Confidential Department or Event Name
+ 37 Intel Confidential Department or Event Name
+ 37Trace View
+•Install Windows Driver Kit (WDK)
+•The traceview.exe can be found in C: \Program Files (x86) \Windows Kits \10\Tools \10.0.22621.0 \x64 \traceview.exe
+•Right click traceview.exe, select “Run as administrator”. “File” -> “Create New Log Session”.
+•In Registered Provider, add Intel -NPU -Kmd  and Intel -NPU -LevelZero
+Intel Confidential Department or Event Name
+ 38 Intel Confidential Department or Event Name
+ 38Trace View
+•Click Next and check “Log Trace Event Data To File” and then “Finish” to start the log session.
+•Reproduce the issue
+•Selecting “File”> “Exit” to stop the log session 
+Intel Confidential Department or Event Name
+ 39 Intel Confidential Department or Event Name
+ 39WPR (Windows Performance Recorder)
+Next Gen AI Experiences - NPU ETL recording and analysis
+•wpr.exe -start NeuralProcessing  -filemode
+•repro issue
+•wpr  -stop trace.etl
+•can be combined with other built -in profiles or your own tracing profile(.WPRP file)
+•ex: wpr  -start NeuralProcessing  -start CPU -start file.wprp!myprofile
+Intel Confidential Department or Event Name
+ 40 Intel Confidential Department or Event Name
+ 40NPU ETL recording and analysis
+•ADK 26063+ Download the Windows ADK 10.1.26100.1 (May 2024)
+•It shows each process consuming the resource, the callstack  dispatching the work to the NPU, and 
+the amount of time spent consuming the resource(in absolute time and relative % based on the time 
+interval focused on)
+Intel Confidential Department or Event Name
+ 41 Intel Confidential Department or Event Name
+ 41NPU ETL recording and analysis
+Intel Confidential Department or Event Name
+ 42 Intel Confidential Department or Event Name
+ 42PTAT
+For NPU performance issues, we can also get NPU frequency data by PTAT  tool Intel Confidential Department or Event Name
+ 43 Intel Confidential Department or Event Name
+ 43PTAT
+Intel Confidential Department or Event Name
+ 44 Intel Confidential Department or Event Name
+ 44Reference
+ARL NPU Introduction and Features  (video)
+2023 2H TPnP  Customer Tour - MTL -TnP -O025 - MTL Resnet50 BKM  (video)
+MTL -AI-D006MTL iVPU  Validation and Debug Training  (video)
+Meteor Lake VPU MEP Enablement and Validation Testcases in OEM Platform
+Debug NPU/MEP software stack debug guide
